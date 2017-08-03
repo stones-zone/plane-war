@@ -9,7 +9,7 @@ import enemy
 import bullet
 import supply
 
-#pygame init
+#pygame mixer bg init
 pygame.init()
 pygame.mixer.init()
 bg_size = width, height = 480, 750
