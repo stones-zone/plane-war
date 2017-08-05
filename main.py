@@ -9,7 +9,7 @@ import enemy
 import bullet
 import supply
 
-#pygame mixer bg init
+# pygame mixer bg init
 pygame.init()
 pygame.mixer.init()
 bg_size = width, height = 480, 750
@@ -17,7 +17,7 @@ screen = pygame.display.set_mode(bg_size)
 pygame.display.set_caption("Plane War...Demo")
 background = pygame.image.load("image/background.png")
 
-#load music
+# load music
 pygame.mixer.music.load("sound/game_music.wav")
 pygame.mixer.music.set_volume(0.2)
 
@@ -45,11 +45,13 @@ get_bomb_sound.set_volume(0.2)
 get_bullet_sound = pygame.mixer.Sound("sound/get_double_laser.wav")
 get_bullet_sound.set_volume(0.2)
 
+
 def add_small_enemies(group1, group2, num):
     for i in range(num):
         e1 = enemy.SmallEnemy(bg_size)
         group1.add(e1)
         group2.add(e1)
+
 
 def add_mid_enemies(group1, group2, num):
     for i in range(num):
@@ -57,15 +59,18 @@ def add_mid_enemies(group1, group2, num):
         group1.add(e2)
         group2.add(e2)
 
+
 def add_big_enemies(group1, group2, num):
     for i in range(num):
         e3 = enemy.BigEnemy(bg_size)
         group1.add(e3)
         group2.add(e3)
 
+
 def inc_speed(target, inc):
     for each in target:
         each.speed += inc
+
 
 def main():
     pygame.mixer.music.play(-1)
@@ -83,7 +88,7 @@ def main():
     is_double_bullet = False
     flag_recorded = False
     score_font = pygame.font.SysFont("arial", 24)
-    score =0
+    score = 0
     level = 1
     bomb_num = 3
     bomb_image = pygame.image.load("image/bomb.png")
@@ -119,8 +124,8 @@ def main():
     bullet2_index = 0
     bullet2_num = 10
     for i in range(bullet2_num // 2):
-        bullet2.append(bullet.Bullet2((me.rect.centerx - 33, me.rect.centery)))
-        bullet2.append(bullet.Bullet2((me.rect.centerx + 30, me.rect.centery)))
+        bullet2.append(bullet.Bullet2((me.rect.centerx + 15, me.rect.centery)))
+        bullet2.append(bullet.Bullet2((me.rect.centerx - 15, me.rect.centery)))
 
     color_black = (0, 0, 0)
     color_green = (0, 255, 0)
@@ -136,8 +141,12 @@ def main():
     paused_rect.left, paused_rect.top = width - paused_rect.width - 10, 10
     paused_image = pause_nor_image
 
-    gameover_image = pygame.image.load("image/game_over.png")  # 游戏结束背景图片
+    gameover_image = pygame.image.load("image/game_over.png")
     gameover_rect = gameover_image.get_rect()
+
+    gamereload_image = pygame.image.load("image/btn_finish.png")
+    gamereload_rect = gamereload_image.get_rect()
+    gamereload_rect.left, gamereload_rect.top = (width-gamereload_rect.width)//2, 470
 
     while running:
         clock.tick(60)
@@ -192,6 +201,36 @@ def main():
                         pygame.time.set_timer(supply_timer, 30 * 1000)
                         pygame.mixer.music.unpause()
                         pygame.mixer.unpause()
+                elif event.button == 1 and gamereload_rect.collidepoint(event.pos):
+                    # bg and music init
+                    screen.blit(background, (0, 0))
+                    screen.blit(paused_image, paused_rect)
+                    pygame.mixer.music.play(-1)
+                    # others init
+                    pygame.time.set_timer(supply_timer, 10 * 1000)
+                    score = 0
+                    level = 1
+                    life_num = 3
+                    bomb_num = 3
+                    flag_recorded = False
+                    is_double_bullet = False
+                    # clean enemies
+                    for each in enemies:
+                        if each.rect.bottom > 0:
+                            each.active = False
+                    enemies.empty()
+                    small_enemies.empty()
+                    add_small_enemies(small_enemies, enemies, 1)
+                    mid_enemies.empty()
+                    add_mid_enemies(mid_enemies, enemies, 1)
+                    big_enemies.empty()
+                    add_big_enemies(big_enemies, enemies, 1)
+                    # clean bullet/bomb
+                    bomb_supply.active = False
+                    bullet_supply.active = False
+                    for b in bullets:
+                        if b.rect.bottom > 0:
+                            b.active = False
 
         if life_num and not paused:
             # draw score
@@ -204,9 +243,9 @@ def main():
             screen.blit(bomb_image, (10, height - bomb_rect.height - 10))
             screen.blit(bomb_text, (20 + bomb_rect.width, height - bomb_text_rect.height - 10))
 
-            #draw life
+            # draw life
             for i in range(life_num):
-                screen.blit(life_image, (width - 10 - (i + 1) * life_rect.width, height - 10 -life_rect.height))
+                screen.blit(life_image, (width - 10 - (i + 1) * life_rect.width, height - 10 - life_rect.height))
 
             # get the keyboard input sequence
             key_pressed = pygame.key.get_pressed()
@@ -219,11 +258,7 @@ def main():
             if key_pressed[K_d] or key_pressed[K_RIGHT]:
                 me.move_right()
 
-            # event response
-            #for event in pygame.event.get():
-
-
-            #supply
+            # supply set
             if bomb_supply.active:
                 bomb_supply.move()
                 screen.blit(bomb_supply.image, bomb_supply.rect)
@@ -242,29 +277,29 @@ def main():
                     pygame.time.set_timer(double_bullet_timer, 15 * 1000)
 
             # level upgrade
-            if level ==1 and score > 500:
+            if level == 1 and score > 500:
                 level = 2
                 level_up_sound.play()
                 add_small_enemies(small_enemies, enemies, 3)
                 add_mid_enemies(mid_enemies, enemies, 2)
                 add_big_enemies(big_enemies, enemies, 1)
                 inc_speed(small_enemies, 1)
-            elif level ==2 and score > 6000:
+            elif level == 2 and score > 6000:
                 level = 3
                 level_up_sound.play()
                 add_small_enemies(small_enemies, enemies, 3)
                 add_mid_enemies(mid_enemies, enemies, 2)
                 add_big_enemies(big_enemies, enemies, 1)
-                #inc_speed(small_enemies, 1)
+                # inc_speed(small_enemies, 1)
                 inc_speed(mid_enemies, 1)
-            elif level ==3 and score > 15000:
+            elif level == 3 and score > 15000:
                 level = 4
                 level_up_sound.play()
                 add_small_enemies(small_enemies, enemies, 3)
                 add_mid_enemies(mid_enemies, enemies, 2)
                 add_big_enemies(big_enemies, enemies, 1)
-                #inc_speed(small_enemies, 1)
-                #inc_speed(mid_enemies, 1)
+                # inc_speed(small_enemies, 1)
+                # inc_speed(mid_enemies, 1)
                 inc_speed(big_enemies, 1)
 
             # bullet collide
@@ -276,8 +311,8 @@ def main():
                     bullet1_index = (bullet1_index + 1) % bullet1_num
                 else:
                     bullets = bullet2
-                    bullets[bullet2_index].reset((me.rect.centerx - 33, me.rect.centery))
-                    bullets[bullet2_index + 1].reset((me.rect.centerx + 30, me.rect.centery))
+                    bullets[bullet2_index].reset((me.rect.centerx - 20, me.rect.centery))
+                    bullets[bullet2_index + 1].reset((me.rect.centerx + 12, me.rect.centery))
                     bullet2_index = (bullet2_index + 2) % bullet2_num
             for b in bullets:
                 if b.active:
@@ -368,7 +403,7 @@ def main():
 
                     if not (delay % 3):
                         screen.blit(each.destroy_images[e2_destroy_index], each.rect)
-                        e2_destroy_index = (e2_destroy_index + 1 ) % 4
+                        e2_destroy_index = (e2_destroy_index + 1) % 4
                         if e2_destroy_index == 0:
                             score += 200
                             each.reset()
@@ -415,8 +450,9 @@ def main():
 
         elif life_num == 0:
             screen.blit(gameover_image, gameover_rect)
-            pygame.mixer.music.stop() # close bg music
-            pygame.mixer.stop() # close others music
+            screen.blit(gamereload_image, gamereload_rect)
+            pygame.mixer.music.stop()  # close bg music
+            pygame.mixer.stop()  # close others music
             pygame.time.set_timer(supply_timer, 0)
 
             if not flag_recorded:

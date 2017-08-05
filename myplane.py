@@ -1,16 +1,21 @@
 import pygame
 
+
 class MyPlane(pygame.sprite.Sprite):
     def __init__(self, bg_size):
         pygame.sprite.Sprite.__init__(self)
 
         self.image1 = pygame.image.load("image/hero1.png")
         self.image2 = pygame.image.load("image/hero2.png")
-        self.rect = self.image1.get_rect() #image1's position
-        self.width, self.height = bg_size[0], bg_size[1] #local backgroud size
-        self.rect.left, self.rect.top = (self.width-self.rect.width)//2, (self.height-self.rect.height-30)
-        #image1's initial position
-        self.speed =10
+        self.rect = self.image1.get_rect()  # image1's position
+        self.width, self.height = bg_size[0], bg_size[1]  # local background size
+        # reduce scale
+        self.image1 = pygame.transform.smoothscale(self.image1, (self.rect.width // 2, self.rect.height // 2))
+        self.image2 = pygame.transform.smoothscale(self.image2, (self.rect.width // 2, self.rect.height // 2))
+        self.rect = self.image1.get_rect()
+        self.rect.left, self.rect.top = (self.width - self.rect.width) // 2, (self.height - self.rect.height - 30)
+
+        self.speed = 10
         self.mask = pygame.mask.from_surface(self.image1)
         self.active = True
         self.invincible = False

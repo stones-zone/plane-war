@@ -1,5 +1,6 @@
 import pygame
 
+
 class Bullet1(pygame.sprite.Sprite):
     def __init__(self, position):
         pygame.sprite.Sprite.__init__(self)
@@ -19,6 +20,7 @@ class Bullet1(pygame.sprite.Sprite):
     def reset(self, position):
         self.rect.left, self.rect.top = position
         self.active = True
+
 
 class Bullet2(pygame.sprite.Sprite):
     def __init__(self, position):

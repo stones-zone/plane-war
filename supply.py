@@ -1,6 +1,7 @@
 import pygame
 from random import *
 
+
 class BulletSupply(pygame.sprite.Sprite):
     def __init__(self, bg_size):
         pygame.sprite.Sprite.__init__(self)
@@ -22,6 +23,7 @@ class BulletSupply(pygame.sprite.Sprite):
     def reset(self):
         self.active = True
         self.rect.left, self.rect.bottom = randint(0, self.width - self.rect.width), -100
+
 
 class BombSupply(pygame.sprite.Sprite):
     def __init__(self,bg_size):

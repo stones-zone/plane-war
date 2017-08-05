@@ -1,15 +1,16 @@
 import pygame
 from random import *
 
+
 class SmallEnemy(pygame.sprite.Sprite):
-    def __init__(self,bg_size):
+    def __init__(self, bg_size):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("image/enemy1.png")
         self.rect = self.image.get_rect()
         self.width, self.height = bg_size[0], bg_size[1]
         self.rect.left, self.rect.top = (randint(0, self.width - self.rect.width),
                                          randint(-5 * self.rect.height, -5))
-        self.speed =2
+        self.speed = 2
         self.mask = pygame.mask.from_surface(self.image)
         self.active = True
 
@@ -29,9 +30,11 @@ class SmallEnemy(pygame.sprite.Sprite):
                                          randint(-5 * self.rect.height, 0))
         self.active = True
 
+
 class MidEnemy(pygame.sprite.Sprite):
     energy = 5
-    def __init__(self,bg_size):
+
+    def __init__(self, bg_size):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("image/enemy2.png")
         self.image_hit = pygame.image.load("image/enemy2_hit.png")
@@ -64,8 +67,10 @@ class MidEnemy(pygame.sprite.Sprite):
 
         self.energy = MidEnemy.energy
 
+
 class BigEnemy(pygame.sprite.Sprite):
     energy = 15
+
     def __init__(self, bg_size):
         pygame.sprite.Sprite.__init__(self)
         self.image1 = pygame.image.load("image/enemy3_n1.png")
